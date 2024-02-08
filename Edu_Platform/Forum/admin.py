@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .domain.models import ForumThread, ThreadReply
 
-# Register your models here.
+admin.site.register(ForumThread)
+admin.site.register(ThreadReply)
