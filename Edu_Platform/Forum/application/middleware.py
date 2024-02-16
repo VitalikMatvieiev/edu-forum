@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-from django.contrib.auth.middleware import get_user
 from rest_framework.authentication import get_authorization_header
 from django.contrib.auth.models import AnonymousUser
 
