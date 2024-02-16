@@ -12,10 +12,14 @@ class ForumThreadSerializer(serializers.ModelSerializer):
 
 
 class ThreadReplySerializer(serializers.ModelSerializer):
+    thread_id = serializers.SerializerMethodField()
+    
     class Meta:
         model = ThreadReply
-        fields = ['thread', 'user_id', 'content']
+        fields = ['thread_id', 'user_id', 'content']
         extra_kwargs = {
             'created_date': {'read_only': True},
         }
-        
+    
+    def get_thread_id(self, obj):
+        return obj.thread.id

@@ -10,6 +10,9 @@ class ForumThread(models.Model):
     
     def __str__(self):
         return f'{self.title} [Course ID: {self.course_id}]'
+    
+    class Meta:
+        ordering = ['created_date']
 
 
 class ThreadReply(models.Model):
@@ -24,3 +27,6 @@ class ThreadReply(models.Model):
     
     def __str__(self):
         return f'Reply by User {self.user_id} on "{self.thread.title}"'
+    
+    class Meta:
+        ordering = ['created_date']
