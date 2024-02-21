@@ -3,7 +3,6 @@ from django.conf import settings
 from .exceptions import DecodeTokenError, ExpiredTokenError
 import logging
 
-
 # logger = logging.getLogger(__name__)
 
 

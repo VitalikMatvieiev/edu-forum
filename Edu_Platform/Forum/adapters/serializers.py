@@ -28,3 +28,11 @@ class ThreadReplySerializer(serializers.ModelSerializer):
     
     def get_thread_id(self, obj):
         return obj.thread.id
+    
+    def create(self, validated_data):
+        return ThreadReply.objects.create(**validated_data)
+    
+    def validate_content(self, value):
+        if value.strip() == '':
+            raise serializers.ValidationError("Content cannot be empty or whitespace.")
+        return value
