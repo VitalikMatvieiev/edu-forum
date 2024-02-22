@@ -31,19 +31,21 @@ def jwt_authentication_middleware(get_response):
                              'claims': payload.get('claims', []),
                              'roles': payload.get('roles', []),
                              'identity_id': payload.get('id')})
-                
+
                 # Attach claims to the request object
                 request.user = user
-            
+
             except DecodeTokenError:
                 return JsonResponse({'error': 'Invalid Token'}, status=401)
-            
+
             except ExpiredTokenError:
                 return JsonResponse({'error': 'Token has expired'}, status=401)
         else:
             request.user = AnonymousUser()
-        
+
         response = get_response(request)
         return response
-    
+
     return middleware
+
+

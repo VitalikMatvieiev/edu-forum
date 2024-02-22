@@ -12,7 +12,7 @@ class ForumThread(models.Model):
         return f'{self.title} [Course ID: {self.course_id}]'
     
     class Meta:
-        ordering = ['created_date']
+        ordering = ['-created_date']
 
 
 class ThreadReply(models.Model):
@@ -29,4 +29,4 @@ class ThreadReply(models.Model):
         return f'Reply by User {self.user_id} on "{self.thread.title}"'
     
     class Meta:
-        ordering = ['created_date']
+        ordering = ['-created_date']
