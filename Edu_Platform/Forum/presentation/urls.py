@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import ForumThreadList, ForumThreadDetail, ThreadReplyList, ThreadReplyDetail, CreateForumThreadView, \
-    CreateThreadReplyView
+    CreateThreadReplyView, UpdateForumThreadView
 
 urlpatterns = [
     path('threads/', ForumThreadList.as_view(), name='thread-list'),
@@ -9,4 +9,5 @@ urlpatterns = [
     path('threads/<int:pk>/replies/', ThreadReplyDetail.as_view(), name='reply-detail'),
     path('threads/create/', CreateForumThreadView.as_view(), name='create-thread'),
     path('threads/<int:thread_id>/replies/create/', CreateThreadReplyView.as_view(), name='create-reply'),
+    path('threads/<int:pk>/update/', UpdateForumThreadView.as_view(), name='update-thread')
 ]
