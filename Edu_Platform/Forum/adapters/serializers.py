@@ -38,13 +38,21 @@ class ThreadReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = ThreadReply
         fields = ['id', 'thread_id', 'user_id', 'content']
-        read_only_fields = ['id', 'created_date']
+        read_only_fields = ['id', 'created_date', 'thread_id']
+        extra_kwargs = {
+            'content': {'required': True, 'max_length': 5000},
+        }
     
     def get_thread_id(self, obj):
         return obj.thread.id
     
     def create(self, validated_data):
         return ThreadReply.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
+        instance.save()
+        return instance
     
     def validate_content(self, value):
         if value.strip() == '':

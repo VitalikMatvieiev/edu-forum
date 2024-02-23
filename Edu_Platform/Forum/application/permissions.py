@@ -48,4 +48,4 @@ class CanUpdateThreadReplyClaim(permissions.BasePermission):
     message = 'Update Thread Reply are not allowed.'
     
     def has_permission(self, request, view):
-        return hasattr(request.user, 'claim') and UpdateThreadReplyClaim in request.user.claims
+        return hasattr(request.user, 'claims') and UpdateThreadReplyClaim in request.user.claims

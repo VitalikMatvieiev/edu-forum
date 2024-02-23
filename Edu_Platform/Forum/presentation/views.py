@@ -34,7 +34,7 @@ class CreateForumThreadView(generics.CreateAPIView):
     queryset = ForumThread.objects.all()
     serializer_class = ForumThreadSerializer
     permission_classes = [CanCreateForumThreadClaim, IsAuthenticated]
-
+    
     def get_serializer_context(self):
         context = super(CreateForumThreadView, self).get_serializer_context()
         context.update({"request": self.request})
@@ -62,3 +62,13 @@ class UpdateForumThreadView(generics.UpdateAPIView):
     
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
+
+
+class UpdateThreadReplyView(generics.UpdateAPIView):
+    queryset = ThreadReply.objects.all()
+    serializer_class = ThreadReplySerializer
+    permission_classes = [CanUpdateThreadReplyClaim, IsAuthenticated]
+    
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+    
