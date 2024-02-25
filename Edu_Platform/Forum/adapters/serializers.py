@@ -6,14 +6,30 @@ class ForumThreadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ForumThread
         fields = ['id', 'course_id', 'title', 'content']
+        read_only_fields = ['id', 'created_date']
         extra_kwargs = {
-            'created_date': {'read_only': True},
             'title': {'required': True, 'max_length': 200},
-            'content': {'required': True}
+            'content': {'required': True},
         }
+    
+    def __init__(self, *args, **kwargs):
+        super(ForumThreadSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get('request', None)
+        if request and getattr(request, 'method', None) == 'POST':
+            # Only set course_id as required if this is a POST request
+            self.fields['course_id'] = serializers.IntegerField(required=True)
+        else:
+            # For other methods (PUT, PATCH, etc.), course_id is read_only
+            self.fields['course_id'] = serializers.IntegerField(read_only=True)
     
     def create(self, validated_data):
         return ForumThread.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.content = validated_data.get('content', instance.content)
+        instance.save()
+        return instance
 
 
 class ThreadReplySerializer(serializers.ModelSerializer):
@@ -22,8 +38,9 @@ class ThreadReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = ThreadReply
         fields = ['id', 'thread_id', 'user_id', 'content']
+        read_only_fields = ['id', 'created_date', 'thread_id']
         extra_kwargs = {
-            'created_date': {'read_only': True},
+            'content': {'required': True, 'max_length': 5000},
         }
     
     def get_thread_id(self, obj):
@@ -31,6 +48,11 @@ class ThreadReplySerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         return ThreadReply.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.content = validated_data.get('content', instance.content)
+        instance.save()
+        return instance
     
     def validate_content(self, value):
         if value.strip() == '':
