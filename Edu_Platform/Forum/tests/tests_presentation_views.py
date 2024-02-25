@@ -67,3 +67,19 @@ class ForumThreadAndReplyTests(APITestCase):
         response = self.client.post(reverse('create-reply', kwargs={'thread_id': self.forum_thread.pk}), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ThreadReply.objects.count(), 2)
+
+    def test_UpdateForumThread_UpdatesThread_WhenUserHasUpdateClaim(self):
+        # Corrected claim names as an example
+        self.client.authenticate(claims=['UpdateForumThreadClaim'])
+        updated_data = {'title': 'Updated Thread Title', 'content': 'Updated content'}
+        update_url = reverse('update-thread', kwargs={'pk': self.forum_thread.pk})
+        response = self.client.put(update_url, updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_UpdateThreadReply_UpdatesReply_WhenUserHasUpdateClaim(self):
+        # Corrected claim names as an example
+        self.client.authenticate(claims=['UpdateThreadReplyClaim'])
+        updated_data = {'content': 'Updated reply content'}
+        update_url = reverse('update-reply', kwargs={'pk': self.thread_reply.pk})
+        response = self.client.put(update_url, updated_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
