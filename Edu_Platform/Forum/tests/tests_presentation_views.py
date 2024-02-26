@@ -83,3 +83,35 @@ class ForumThreadAndReplyTests(APITestCase):
         update_url = reverse('update-reply', kwargs={'pk': self.thread_reply.pk})
         response = self.client.put(update_url, updated_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_DeleteForumThread_DeletesThread_WhenUserHasDeleteClaim(self):
+        # Set up a mock user with the correct claim to delete forum threads
+        self.client.authenticate(claims=['DeleteForumThreadClaim'])
+        delete_url = reverse('delete-thread',
+                             kwargs={'pk': self.forum_thread.pk})  # Ensure this URL name matches your urls.py
+    
+        # Perform the delete operation
+        response = self.client.delete(delete_url)
+    
+        # Check that the response status code is 204 NO CONTENT
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    
+        # Verify that the thread has been deleted from the database
+        with self.assertRaises(ForumThread.DoesNotExist):
+            ForumThread.objects.get(pk=self.forum_thread.pk)
+
+    def test_DeleteThreadReply_DeletesReply_WhenUserHasDeleteClaim(self):
+        # Set up a mock user with the correct claim to delete thread replies
+        self.client.authenticate(claims=['DeleteThreadReplyClaim'])
+        delete_url = reverse('delete-reply',
+                             kwargs={'pk': self.thread_reply.pk})  # Ensure this URL name matches your urls.py
+    
+        # Perform the delete operation
+        response = self.client.delete(delete_url)
+    
+        # Check that the response status code is 204 NO CONTENT
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    
+        # Verify that the reply has been deleted from the database
+        with self.assertRaises(ThreadReply.DoesNotExist):
+            ThreadReply.objects.get(pk=self.thread_reply.pk)
