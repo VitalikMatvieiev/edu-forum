@@ -6,6 +6,8 @@ CreateForumThreadClaim = 'CreateForumThreadClaim'
 CreateThreadReplyClaim = 'CreateThreadReplyClaim'
 UpdateForumThreadClaim = 'UpdateForumThreadClaim'
 UpdateThreadReplyClaim = 'UpdateThreadReplyClaim'
+DeleteForumThreadClaim = 'DeleteForumThreadClaim'
+DeleteThreadReplyClaim = 'DeleteThreadReplyClaim'
 
 
 class HasViewForumThreadClaim(permissions.BasePermission):
@@ -49,3 +51,18 @@ class CanUpdateThreadReplyClaim(permissions.BasePermission):
     
     def has_permission(self, request, view):
         return hasattr(request.user, 'claims') and UpdateThreadReplyClaim in request.user.claims
+
+
+class CanDeleteForumThreadClaim(permissions.BasePermission):
+    message = 'Delete Forum Thread are not allowed.'
+    
+    def has_permission(self, request, view):
+        return hasattr(request.user, 'claims') and DeleteForumThreadClaim in request.user.claims
+
+
+class CanDeleteThreadReplyClaim(permissions.BasePermission):
+    message = 'Delete Thread Reply are not allowed.'
+    
+    def has_permission(self, request, view):
+        return hasattr(request.user, 'claims') and DeleteThreadReplyClaim in request.user.claims
+    
