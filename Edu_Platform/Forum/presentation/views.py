@@ -1,9 +1,10 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from ..domain.models import ForumThread, ThreadReply
 from ..adapters.serializers import ForumThreadSerializer, ThreadReplySerializer
 from ..application.permissions import HasViewForumThreadClaim, HasViewThreadReplyClaim, CanCreateForumThreadClaim, \
-    CanCreateThreadReplyClaim, CanUpdateForumThreadClaim, CanUpdateThreadReplyClaim
+    CanCreateThreadReplyClaim, CanUpdateForumThreadClaim, CanUpdateThreadReplyClaim, CanDeleteForumThreadClaim, CanDeleteThreadReplyClaim
 
 
 class ForumThreadList(generics.ListAPIView):
@@ -71,4 +72,27 @@ class UpdateThreadReplyView(generics.UpdateAPIView):
     
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
+
+
+class DeleteForumThreadView(generics.DestroyAPIView):
+    queryset = ForumThread.objects.all()
+    serializer_class = ForumThreadSerializer
+    permission_classes = [CanDeleteForumThreadClaim, IsAuthenticated]
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"message": "Thread Deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class DeleteThreadReplyView(generics.DestroyAPIView):
+    queryset = ThreadReply.objects.all()
+    serializer_class = ThreadReplySerializer
+    permission_classes = [CanDeleteThreadReplyClaim, IsAuthenticated]
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"message": "Reply Deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
     
