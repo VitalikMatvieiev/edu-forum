@@ -5,7 +5,7 @@ from django.utils import timezone
 class ForumThread(models.Model):
     course_id = models.IntegerField()
     title = models.CharField(max_length=200)
-    content = models.TextField(null=True, blank=True)
+    content = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
@@ -21,8 +21,8 @@ class ThreadReply(models.Model):
         on_delete=models.CASCADE,
         related_name='replies'
     )
-    user_id = models.IntegerField(null=True, blank=True)
-    content = models.TextField(null=True, blank=True)
+    user_id = models.IntegerField()
+    content = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
