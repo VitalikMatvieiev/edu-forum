@@ -5,7 +5,7 @@ from ..domain.models import ForumThread, ThreadReply
 class ForumThreadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ForumThread
-        fields = ['id', 'course_id', 'title', 'content']
+        fields = ['id', 'course_id', 'title', 'content', 'created_date']
         read_only_fields = ['id', 'created_date']
         extra_kwargs = {
             'title': {'required': True, 'max_length': 200},
@@ -37,7 +37,7 @@ class ThreadReplySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ThreadReply
-        fields = ['id', 'thread_id', 'user_id', 'content']
+        fields = ['id', 'thread_id', 'user_id', 'content', 'created_date']
         read_only_fields = ['id', 'created_date', 'thread_id']
         extra_kwargs = {
             'content': {'required': True, 'max_length': 5000},

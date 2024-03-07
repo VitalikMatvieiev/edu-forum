@@ -1,12 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.views.decorators.cache import cache_page
-from django.core.cache import cache
-from django.utils.decorators import method_decorator
-from rest_framework.exceptions import NotFound
-from ..repositories.implementations import ForumThreadRepository
-from ..repositories.forum_service import ForumThreadService
+from ..repositories.forum_service import ForumThreadService, ThreadReplyService
 from ..domain.models import ForumThread, ThreadReply
 from ..adapters.serializers import ForumThreadSerializer, ThreadReplySerializer
 from ..application.permissions import HasViewForumThreadClaim, HasViewThreadReplyClaim, CanCreateForumThreadClaim, \
@@ -14,7 +9,6 @@ from ..application.permissions import HasViewForumThreadClaim, HasViewThreadRepl
     CanDeleteThreadReplyClaim
 
 
-@method_decorator(cache_page(60 * 5), name='dispatch')
 class ForumThreadList(generics.ListAPIView):
     serializer_class = ForumThreadSerializer
     permission_classes = [HasViewForumThreadClaim]
@@ -23,25 +17,34 @@ class ForumThreadList(generics.ListAPIView):
         service = ForumThreadService()
         return service.get_all_threads()
 
-  
+
 class ForumThreadDetail(generics.RetrieveAPIView):
-    queryset = ForumThread.objects.all()
     serializer_class = ForumThreadSerializer
     permission_classes = [HasViewForumThreadClaim]
     
-    
+    def get_object(self):
+        service = ForumThreadService()
+        thread_id = self.kwargs['pk']
+        return service.get_thread_by_id(thread_id)
 
 
 class ThreadReplyList(generics.ListAPIView):
-    queryset = ThreadReply.objects.all().order_by('-created_date')
     serializer_class = ThreadReplySerializer
     permission_classes = [HasViewThreadReplyClaim]
+    
+    def get_queryset(self):
+        service = ThreadReplyService()
+        return service.get_all_replies()
 
 
 class ThreadReplyDetail(generics.RetrieveAPIView):
-    queryset = ThreadReply.objects.all()
     serializer_class = ThreadReplySerializer
     permission_classes = [HasViewThreadReplyClaim]
+    
+    def get_object(self):
+        service = ThreadReplyService()
+        reply_id = self.kwargs['pk']
+        return service.get_reply_by_id(reply_id)
 
 
 class CreateForumThreadView(generics.CreateAPIView):
